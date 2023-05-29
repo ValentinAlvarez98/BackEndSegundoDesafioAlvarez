@@ -1,0 +1,16 @@
+{
+  "name": "segundo_desafio",
+  "version": "1.0.0",
+  "description": "segundo desafio entregable del curso de programacion backend de Coderhouse",
+  "main": "product_manager.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "jest": "^29.5.0"
+  }
+}
