@@ -243,7 +243,7 @@ class ProductManager {
 
                   } else {
 
-                        console.log('No existe el producto con el ID ingresado.');
+                        console.log('Error: no existe el producto con el ID ingresado.');
                         return;
 
                   };
