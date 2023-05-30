@@ -103,7 +103,79 @@ class ProductManager {
                   // Si el archivo no existe, se muestra un mensaje de error y retorna.
             } else {
 
-                  console.log("No existe ningún producto creado.");
+                  return "No existe ningún producto creado.";
+
+            };
+
+      };
+
+      // Se crea un método para modificar un producto.
+      updateProduct = async (id, title, description, price, thumbnail, code, stock) => {
+
+            // Se verifica que exista el archivo JSON.
+            if (fs.existsSync(this.path)) {
+
+                  const productData = await fs.promises.readFile(this.path, 'utf-8');
+                  this.products = JSON.parse(productData);
+
+                  // Utilizando el método getProductById, se obtiene el producto a modificar.
+                  const product = await this.getProductById(id);
+
+                  // Se verifica que el producto exista.
+                  if (product) {
+
+                        // Se crea un objeto con los datos del producto actualizado.
+                        const updatedProduct = {
+                              ...product,
+                              title: title || product.title,
+                              description: description || product.description,
+                              price: price || product.price,
+                              thumbnail: thumbnail || product.thumbnail,
+                              code: code || product.code,
+                              stock: stock || product.stock,
+                        };
+
+                        // Se verifica que el producto no tenga campos vacíos.
+                        if (
+                              updatedProduct.title == null ||
+                              updatedProduct.description == null ||
+                              updatedProduct.price == null ||
+                              updatedProduct.thumbnail == null ||
+                              updatedProduct.code == null ||
+                              updatedProduct.stock == null
+                        ) {
+
+                              console.log('El producto ingresado no puede tener campos vacíos.');
+                              return;
+
+                        };
+
+                        // Se verifica que el código del producto no exista.
+                        if (code && this.products.some((p) => p.id !== id && p.code === code)) {
+
+                              console.log('El código ingresado ya pertenece a otro producto.');
+                              return;
+
+                        };
+
+                        // Se reemplaza el producto en el array.
+                        this.products = this.products.map((p) => (p.id === id ? updatedProduct : p));
+
+                        // Se escribe el array en el archivo JSON.
+                        await fs.promises.writeFile(this.path, JSON.stringify(this.products, null, '\t'), 'utf-8');
+
+                        console.log('Producto actualizado correctamente.');
+
+                  } else {
+
+                        console.log('No existe el producto con el ID ingresado.');
+                        return;
+
+                  };
+
+            } else {
+
+                  console.log('No existe ningún producto creado.');
                   return;
 
             };
