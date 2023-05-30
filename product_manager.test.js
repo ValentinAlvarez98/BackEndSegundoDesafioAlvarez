@@ -391,6 +391,7 @@ describe('ProductManager', () => {
                   productToUpdate.stock
             );
 
+
             const updatedProduct = await productManager.getProductById(productToUpdate.id);
 
             expect(updatedProduct).toEqual({
@@ -439,6 +440,7 @@ describe('ProductManager', () => {
                   product2.stock
             );
 
+
             const products = await productManager.getProducts();
             const productToUpdate = products[1];
 
@@ -460,6 +462,150 @@ describe('ProductManager', () => {
                   ...productToUpdate,
                   description: updatedDescription
             });
+
+      });
+
+      test('deleteAllProducts deberia eliminar todos los productos', async () => {
+
+            const product1 = {
+                  title: 'Titulo 1',
+                  description: 'Descripcion 1',
+                  price: 100,
+                  thumbnail: 'Imagen 1',
+                  code: 'Codigo 1',
+                  stock: 10
+            };
+
+            const product2 = {
+                  title: 'Titulo 2',
+                  description: 'Descripcion 1',
+                  price: 200,
+                  thumbnail: 'Imagen 2',
+                  code: 'Codigo 2',
+                  stock: 20
+            };
+
+            await productManager.addProduct(
+                  product1.title,
+                  product1.description,
+                  product1.price,
+                  product1.thumbnail,
+                  product1.code,
+                  product1.stock
+            );
+
+            await productManager.addProduct(
+                  product2.title,
+                  product2.description,
+                  product2.price,
+                  product2.thumbnail,
+                  product2.code,
+                  product2.stock
+            );
+
+            await productManager.deleteAllProducts();
+
+            const products = await productManager.getProducts();
+
+            expect(products).toEqual([]);
+
+      });
+
+      test("deleteProduct deberia eliminar un producto por su id", async () => {
+
+            const product1 = {
+                  title: 'Titulo 1',
+                  description: 'Descripcion 1',
+                  price: 100,
+                  thumbnail: 'Imagen 1',
+                  code: 'Codigo 1',
+                  stock: 10
+            };
+
+            const product2 = {
+                  title: 'Titulo 2',
+                  description: 'Descripcion 2',
+                  price: 200,
+                  thumbnail: 'Imagen 2',
+                  code: 'Codigo 2',
+                  stock: 20
+            };
+
+            await productManager.addProduct(
+                  product1.title,
+                  product1.description,
+                  product1.price,
+                  product1.thumbnail,
+                  product1.code,
+                  product1.stock
+            );
+
+            await productManager.addProduct(
+                  product2.title,
+                  product2.description,
+                  product2.price,
+                  product2.thumbnail,
+                  product2.code,
+                  product2.stock
+            );
+
+            const products = await productManager.getProducts();
+
+            const productToDelete1 = products[0];
+
+            await productManager.deleteProduct(productToDelete1.id);
+
+            expect(products).not.toEqual([...products, productToDelete1])
+
+      });
+
+      test('deleteProduct no deberia eliminar un producto si el id no existe', async () => {
+
+            await productManager.deleteAllProducts();
+
+            const product1 = {
+                  title: 'Titulo 1',
+                  description: 'Descripcion 1',
+                  price: 100,
+                  thumbnail: 'Imagen 1',
+                  code: 'Codigo 1',
+                  stock: 10
+            };
+
+            const product2 = {
+                  title: 'Titulo 2',
+                  description: 'Descripcion 2',
+                  price: 200,
+                  thumbnail: 'Imagen 2',
+                  code: 'Codigo 2',
+                  stock: 20
+            };
+
+            await productManager.addProduct(
+                  product1.title,
+                  product1.description,
+                  product1.price,
+                  product1.thumbnail,
+                  product1.code,
+                  product1.stock
+            );
+
+            await productManager.addProduct(
+                  product2.title,
+                  product2.description,
+                  product2.price,
+                  product2.thumbnail,
+                  product2.code,
+                  product2.stock
+            );
+
+            const products = await productManager.getProducts();
+
+            const productToDelete = products[0];
+
+            await productManager.deleteProduct(productToDelete.id + 1);
+
+            expect(products).toEqual(products);
 
       });
 
