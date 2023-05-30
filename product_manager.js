@@ -77,21 +77,33 @@ class ProductManager {
       };
 
       // Se crea un método para retornar un producto por su id.
-      getProductById = (id) => {
+      getProductById = async (id) => {
 
-            // Se busca el producto en el array.
-            const product = this.products.find(products => products.id === id);
+            // Se verifica que exista el archivo JSON.
+            if (fs.existsSync(this.path)) {
 
-            // Se verifica que el producto exista.
-            if (product) {
+                  const productData = await fs.promises.readFile(this.path, 'utf-8');
+                  this.products = JSON.parse(productData);
+                  const product = this.products.find((product) => product.id === id);
 
-                  // Si el producto existe, lo retornamos.
-                  return product;
+                  // Se verifica que el producto exista.
+                  if (product) {
 
+                        // Si el producto existe, se retorna.
+                        return product;
+
+                  } else {
+
+                        // Si el producto no existe, se muestra un mensaje de error y retorna.
+                        console.log("No existe el producto con el id ingresado.");
+                        return;
+
+                  };
+
+                  // Si el archivo no existe, se muestra un mensaje de error y retorna.
             } else {
 
-                  // Si el producto no existe, mostramos un mensaje de error y retornamos.
-                  console.log("No existe el producto con el id ingresado.");
+                  console.log("No existe ningún producto creado.");
                   return;
 
             };

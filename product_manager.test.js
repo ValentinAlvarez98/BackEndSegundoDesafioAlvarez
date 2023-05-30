@@ -166,11 +166,8 @@ describe('ProductManager', () => {
                   id: 2,
             });
       });
-});
 
-/* 
-
-      test('getProductById deberia retornar un producto por su id', () => {
+      test('getProductById deberia retornar un producto por su id', async () => {
 
             const product1 = {
                   title: 'Titulo 1',
@@ -190,7 +187,7 @@ describe('ProductManager', () => {
                   stock: 20
             };
 
-            productManager.addProduct(
+            await productManager.addProduct(
                   product1.title,
                   product1.description,
                   product1.price,
@@ -199,7 +196,7 @@ describe('ProductManager', () => {
                   product1.stock
             );
 
-            productManager.addProduct(
+            await productManager.addProduct(
                   product2.title,
                   product2.description,
                   product2.price,
@@ -208,8 +205,8 @@ describe('ProductManager', () => {
                   product2.stock
             );
 
-            const productById1 = productManager.getProductById(1);
-            const productById2 = productManager.getProductById(3);
+            const productById1 = await productManager.getProductById(1);
+            const productById2 = await productManager.getProductById(3);
 
             expect(productById1).toEqual({
                   ...product1,
@@ -218,6 +215,6 @@ describe('ProductManager', () => {
 
             expect(productById2).toBeUndefined();
 
-      }); 
+      });
 
-});*/
+});
