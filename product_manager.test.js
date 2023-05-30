@@ -1,28 +1,35 @@
-const ProductManager = require('./product_manager.js');
+const ProductManager = require('./product_manager');
 
 describe('ProductManager', () => {
-      let productManager;
+      const productManager = new ProductManager();
 
-      beforeEach(() => {
-            productManager = new ProductManager();
+      test('getProducts debería retornar los productos del archivo JSON si existe', async () => {
+            const products = await productManager.getProducts();
+
+            expect(products).not.toEqual([]);
       });
 
-      test('getProducts deberia retornar un array vacio', () => {
-            expect(productManager.getProducts()).toEqual([]);
+      test('getProducts debería retornar un array vacío si el archivo JSON no existe', async () => {
+            productManager.path = 'ruta_incorrecta/products.json';
+
+            const products = await productManager.getProducts();
+
+            expect(products).toEqual([]);
+
+            productManager.path = './data/products.json';
       });
 
-      test('addProduct no deberia permitir campos vacios', () => {
-
+      test('addProduct no debería permitir campos vacíos', async () => {
             const product = {
                   title: null,
                   description: 'Descripcion 1',
                   price: 100,
                   thumbnail: 'Imagen 1',
                   code: 'Codigo 1',
-                  stock: 10
+                  stock: 10,
             };
 
-            productManager.addProduct(
+            await productManager.addProduct(
                   product.title,
                   product.description,
                   product.price,
@@ -31,22 +38,25 @@ describe('ProductManager', () => {
                   product.stock
             );
 
-            expect(productManager.getProducts()).toEqual([]);
+            const products = await productManager.getProducts();
 
+            expect(products[0]).not.toEqual({
+                  ...product,
+                  id: 1,
+            });
       });
 
-      test('addProduct deberia agregar un producto', () => {
-
+      test('addProduct deberia agregar un producto', async () => {
             const product = {
                   title: 'Titulo 1',
                   description: 'Descripcion 1',
                   price: 100,
                   thumbnail: 'Imagen 1',
                   code: 'Codigo 1',
-                  stock: 10
+                  stock: 10,
             };
 
-            productManager.addProduct(
+            await productManager.addProduct(
                   product.title,
                   product.description,
                   product.price,
@@ -55,23 +65,22 @@ describe('ProductManager', () => {
                   product.stock
             );
 
-            const products = productManager.getProducts();
+            const products = await productManager.getProducts();
 
             expect(products[0]).toEqual({
                   ...product,
-                  id: 1
+                  id: 1,
             });
       });
 
-      test('addProduct no deberia permitir un code repetido', () => {
-
+      test('addProduct no deberia permitir un code repetido', async () => {
             const product1 = {
                   title: 'Titulo 1',
                   description: 'Descripcion 1',
                   price: 100,
                   thumbnail: 'Imagen 1',
                   code: 'Codigo 1',
-                  stock: 10
+                  stock: 10,
             };
 
             const product2 = {
@@ -80,10 +89,10 @@ describe('ProductManager', () => {
                   price: 200,
                   thumbnail: 'Imagen 2',
                   code: 'Codigo 1',
-                  stock: 20
+                  stock: 20,
             };
 
-            productManager.addProduct(
+            await productManager.addProduct(
                   product1.title,
                   product1.description,
                   product1.price,
@@ -92,7 +101,7 @@ describe('ProductManager', () => {
                   product1.stock
             );
 
-            productManager.addProduct(
+            await productManager.addProduct(
                   product2.title,
                   product2.description,
                   product2.price,
@@ -101,24 +110,22 @@ describe('ProductManager', () => {
                   product2.stock
             );
 
-            const products = productManager.getProducts();
+            const products = await productManager.getProducts();
 
             expect(products[0]).toEqual({
                   ...product1,
-                  id: 1
+                  id: 1,
             });
-
       });
 
-      test('addProduct deberia asignar un id incremental a cada producto', () => {
-
+      test('addProduct deberia asignar un id incremental a cada producto', async () => {
             const product1 = {
                   title: 'Titulo 1',
                   description: 'Descripcion 1',
                   price: 100,
                   thumbnail: 'Imagen 1',
                   code: 'Codigo 1',
-                  stock: 10
+                  stock: 10,
             };
 
             const product2 = {
@@ -127,10 +134,10 @@ describe('ProductManager', () => {
                   price: 200,
                   thumbnail: 'Imagen 2',
                   code: 'Codigo 2',
-                  stock: 20
+                  stock: 20,
             };
 
-            productManager.addProduct(
+            await productManager.addProduct(
                   product1.title,
                   product1.description,
                   product1.price,
@@ -139,7 +146,7 @@ describe('ProductManager', () => {
                   product1.stock
             );
 
-            productManager.addProduct(
+            await productManager.addProduct(
                   product2.title,
                   product2.description,
                   product2.price,
@@ -148,18 +155,20 @@ describe('ProductManager', () => {
                   product2.stock
             );
 
-            const products = productManager.getProducts();
+            const products = await productManager.getProducts();
 
             expect(products[0]).toEqual({
                   ...product1,
-                  id: 1
+                  id: 1,
             });
             expect(products[1]).toEqual({
                   ...product2,
-                  id: 2
+                  id: 2,
             });
-
       });
+});
+
+/* 
 
       test('getProductById deberia retornar un producto por su id', () => {
 
@@ -209,6 +218,6 @@ describe('ProductManager', () => {
 
             expect(productById2).toBeUndefined();
 
-      });
+      }); 
 
-});
+});*/

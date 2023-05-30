@@ -1,88 +1,82 @@
+// Se importa el módulo fs para poder leer y escribir archivos.
+const fs = require('fs');
+
 // Se crea la clase ProductManager.
 class ProductManager {
-      // Se crea un constructor de productos con un array vacío.
+
+      // Se crea un constructor para inicializar el array de productos y el path del archivo JSON.
       constructor() {
+
             this.products = [];
+            this.path = './data/Products.json';
+
+      }
+
+      // Se crea un método para retornar los productos.
+      getProducts = async () => {
+
+            // Si el archivo existe, se lee, se parsea y el resultado se retorna.
+            if (fs.existsSync(this.path)) {
+
+                  const productData = await fs.promises.readFile(this.path, 'utf-8');
+                  const products = JSON.parse(productData);
+                  return products;
+
+                  // Si el archivo no existe, se retorna un array vacío.
+            } else {
+
+                  return [];
+
+            }
+
       };
 
-      // Se crea un método para retornar todos los productos.
-      getProducts() {
-            return this.products;
-      };
-
-      // Se crea un método para agregar un producto utilizando el método addProduct.
-      addProduct = (
-            title,
-            description,
-            price,
-            thumbnail,
-            code,
-            stock
-      ) => {
+      // Se crea un método para agregar un producto.
+      addProduct = async (title, description, price, thumbnail, code, stock) => {
 
             // Se crea un objeto con los datos del producto.
-            const product = {
+            const newProduct = {
                   title,
                   description,
                   price,
                   thumbnail,
                   code,
                   stock,
+                  id: this.products.length + 1,
             };
 
-            // Se verifica que ningún campo esté vacío.
+            // Se verifica que el producto no tenga campos vacíos.
             if (
-                  title && description && price && thumbnail && code && stock
+                  newProduct.title == null ||
+                  newProduct.description == null ||
+                  newProduct.price == null ||
+                  newProduct.thumbnail == null ||
+                  newProduct.code == null ||
+                  newProduct.stock == null
             ) {
-                  console.log("El producto ingresado no tiene campos vacíos.");
 
-                  // Si no hay campos vacíos, se verifica que el campo code no esté repetido.
-                  if (
-                        !this.products.some((product) => product.code === code)
-                  ) {
-
-                        console.log("El codigo ingresado no pertenece a otro producto.");
-
-                        // Si el campo code no está repetido, se verifica si hay productos en el array.
-                        if (this.products.length === 0) {
-
-                              console.log("El array de productos está vacío y se le asigna el id 1 al producto.");
-
-                              // Si no hay productos en el array, se le asigna el id 1 al producto.
-                              product.id = 1;
-
-                        } else {
-
-                              console.log("El array de productos no está vacío y se le asigna el id del último producto + 1 al producto.");
-
-                              // Si hay productos en el array, se le asigna al nuevo producto, el id del último producto + 1.
-                              product.id = this.products[this.products.length - 1].id + 1;
-
-                        }
-
-                        // Se agrega el producto al array.
-                        this.products.push(product);
-
-                  } else {
-
-                        // Si el campo code está repetido, mostramos un mensaje de error y retornamos.
-                        console.log("El codigo ingresado ya pertenece a otro producto.");
-                        return;
-
-                  }
-
-            } else {
-
-                  // Si hay campos vacíos, mostramos un mensaje de error y retornamos.
-                  console.log("El producto ingresado no puede tener campos vacíos.");
+                  console.log('El producto ingresado no puede tener campos vacíos.');
                   return;
 
             }
 
+            // Se verifica que el código del producto no exista.
+            if (this.products.some((product) => product.code === code)) {
+
+                  console.log('El código ingresado ya pertenece a otro producto.');
+                  return;
+
+            }
+
+            // Se pushea el producto al array.
+            this.products.push(newProduct);
+
+            // Se escribe el array en el archivo JSON.
+            await fs.promises.writeFile(this.path, JSON.stringify(this.products, null, '\t'), 'utf-8');
+
       };
 
       // Se crea un método para retornar un producto por su id.
-
       getProductById = (id) => {
 
             // Se busca el producto en el array.
